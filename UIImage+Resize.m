@@ -94,7 +94,7 @@
             break;
             
         default:
-            [NSException raise:NSInvalidArgumentException format:@"Unsupported content mode: %d", contentMode];
+            [NSException raise:NSInvalidArgumentException format:@"Unsupported content mode: %ld", contentMode];
     }
     
     CGSize newSize = CGSizeMake(self.size.width * ratio, self.size.height * ratio);
@@ -126,7 +126,7 @@
                                                8,
                                                0,
                                                colorSpace,
-                                               kCGImageAlphaPremultipliedLast );
+                                               (CGBitmapInfo)kCGImageAlphaPremultipliedLast );
     CGColorSpaceRelease(colorSpace);
 	
     // Rotate and/or flip the image if required by its orientation
