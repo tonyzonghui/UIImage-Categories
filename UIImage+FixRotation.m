@@ -11,13 +11,42 @@
 @implementation UIImage(fixOrientation)
 
 - (UIImage *)fixOrientation {
-    
-    // No-op if the orientation is already correct
-    if (self.imageOrientation == UIImageOrientationUp) return self;
-    
+    return [self fixOrientationRemoveDeviceOrientation:NO];
+}
+
+- (UIImage *)fixOrientationWithDeviceOrientation {
+    return [self fixOrientationRemoveDeviceOrientation:YES];
+}
+
+
+- (UIImage *)fixOrientationRemoveDeviceOrientation:(BOOL)shouldRemoveDeviceOrientation
+{
     // We need to calculate the proper transformation to make the image upright.
     // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
     CGAffineTransform transform = CGAffineTransformIdentity;
+
+    if(shouldRemoveDeviceOrientation)
+    {
+        if ([UIDevice currentDevice].orientation == UIDeviceOrientationFaceUp) {
+            //No-op
+        }else if([UIDevice currentDevice].orientation == UIDeviceOrientationFaceDown) {
+            //No-op
+        }else if ([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait) {
+            //No-op
+        }else if([UIDevice currentDevice].orientation == UIDeviceOrientationPortraitUpsideDown) {
+            transform = CGAffineTransformTranslate(transform, self.size.width, self.size.height);
+            transform = CGAffineTransformRotate(transform, M_PI);
+        }else if ([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft) {
+            transform = CGAffineTransformTranslate(transform, self.size.width, 0);
+            transform = CGAffineTransformRotate(transform, M_PI_2);
+        }else if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight) {
+            transform = CGAffineTransformTranslate(transform, 0, self.size.height);
+            transform = CGAffineTransformRotate(transform, -M_PI_2);
+        }
+    }else if(self.imageOrientation == UIImageOrientationUp)
+    {
+        return self;
+    }
     
     switch (self.imageOrientation) {
         case UIImageOrientationDown:
@@ -89,6 +118,5 @@
     CGImageRelease(cgimg);
     return img;
 }
-
 
 @end
