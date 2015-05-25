@@ -12,4 +12,8 @@
 
 - (UIImage *)fixOrientation;
 
+// Rotates images right side up depending on the current device orientation
+// (use right after the photo was shot)
+- (UIImage *)fixOrientationWithDeviceOrientation;
+
 @end
